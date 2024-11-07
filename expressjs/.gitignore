@@ -1,0 +1,14 @@
+node_modules
+# Keep environment variables out of version control
+.env
+!.env.example
+
+
+public/images/category_destination/
+public/images/destination/
+public/images/gallery_destination/
+public/images/destination_package/
+public/images/gallery_package/
+public/images/promo/
+public/images/thumbnail_payment_methods/
+public/images/payment_proof/

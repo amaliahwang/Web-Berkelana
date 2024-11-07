@@ -1,0 +1,2995 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "REST API Berkelana Server",
+		"version": "1.0.0",
+		"description": "Explore the beauty of Yogyakarta with our comprehensive travel API. From tourist attractions to local accommodations, enjoy a seamless travel experience with robust security measures.",
+		"contact": {
+			"name": "Muhammad Ammar Afif",
+			"email": "amarafif230@gmail.com"
+		}
+	},
+	"components": {
+		"securitySchemes": {
+			"BearerAuth": {
+				"type": "apiKey",
+				"name": "Authorization",
+				"in": "header"
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/api/v1/"
+		}
+	],
+	"tags": [
+		{
+			"name": "Authentication",
+			"description": "User Auth API"
+		},
+		{
+			"name": "Profiles",
+			"description": "User Profiles API"
+		},
+		{
+			"name": "Subscriptions",
+			"description": "Manage Email Subscriptions"
+		},
+		{
+			"name": "Destinations",
+			"description": "Manage Destinations"
+		}
+	],
+	"paths": {
+		"/auth/register": {
+			"post": {
+				"summary": "Register a new user",
+				"tags": ["Authentication"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"example": {
+								"username": "amarafif",
+								"email": "amarafif@students.com",
+								"password": "securepassword"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "User registered successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"user": {
+										"id": 1,
+										"username": "amarafif",
+										"email": "amarafif@students.amikom.ac.id",
+										"password": "$2b$13$rPw6YOUJBQBJkq24CS4UWOLE1vBb.x2kVP.5YIfqOqCko5BxqhFPS",
+										"role": "user",
+										"resetPasswordToken": null,
+										"registeredAt": "2024-02-09T12:02:46.791Z"
+									},
+									"profile": {
+										"id": 1,
+										"userId": 1,
+										"name": null,
+										"phoneNumber": null,
+										"address": null
+									},
+									"message": "Congratulations! Your account was successfully registered."
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Email or username already exist",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Email or username already exist!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/login": {
+			"post": {
+				"summary": "Login",
+				"tags": ["Authentication"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"example": {
+								"identifier": "amarafiif/amarafif@students.amikom.ac.id",
+								"password": "securepassword"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful login",
+						"content": {
+							"application/json": {
+								"example": {
+									"data": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3NDc3MzgxLCJleHAiOjE3MDc0ODA5ODF9.SiUY_WGRnyam404mcf7FRUqRrVZWXHPi1v9LaduV--o",
+										"user": {
+											"id": 1,
+											"username": "amarafif",
+											"email": "amarafif230@gmail.com",
+											"password": "$2b$13$8drlmKJ8O/7NSckgcnQ39O3eGbT3c5k2kgVSKr1nbkOwkQzuhl1x6",
+											"role": "user",
+											"resetPasswordToken": null,
+											"registeredAt": "2024-02-08T08:55:32.879Z"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Input not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Please provide both username and password."
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Invalid Credentials",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Invalid Credentials"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Email not registered",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Your email is not registered in our system"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/reset-password": {
+			"post": {
+				"summary": "Request password reset",
+				"tags": ["Authentication"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"example": {
+								"email": "amarafif@students.amikom.ac.id"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Password reset link sent successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Password reset link was sent to your email!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Oopss! Your email is not registered in our system."
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "An error occurred!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/set-password": {
+			"put": {
+				"summary": "Set new password after reset",
+				"tags": ["Authentication"],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "resetPasswordToken",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "Reset password token"
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"example": {
+								"newPassword": "passwordnew",
+								"confirmPassword": "passwordnew"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Password reset successful",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Password reset was successful!"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Password and confirmation do not match."
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid or expired reset key",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Invalid or expired reset key!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "An error occurred!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/profile": {
+			"get": {
+				"summary": "Get logged-in user's profile",
+				"tags": ["Profiles"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User profile retrieved successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"id": 2,
+									"userId": 2,
+									"name": null,
+									"phoneNumber": null,
+									"address": null,
+									"user": {
+										"id": 2,
+										"username": "amarafiif",
+										"email": "amarsusu23@gmail.com",
+										"password": "$2b$13$rPw6YOUJBQBJkq24CS4UWOLE1vBb.x2kVP.5YIfqOqCko5BxqhFPS",
+										"role": "user",
+										"resetPasswordToken": null,
+										"registeredAt": "2024-02-09T12:02:46.791Z"
+									}
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Please provide a valid token!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User profile not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "User profile not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/profile/update-profile": {
+			"put": {
+				"summary": "Update logged-in user's profile",
+				"tags": ["Profiles"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"example": {
+								"name": "Muhammad Ammar",
+								"phoneNumber": "081363696103",
+								"address": "Jalan Sudimoro, RT03 RW10, Kelurahan Sagulung Kota, Kecamatan Sagulung, Kota Batam, Kepulauan Riau."
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Profile updated successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"id": 2,
+									"userId": 2,
+									"name": "Muhammad Ammar",
+									"phoneNumber": "081363696103",
+									"address": "Jalan Sudimoro, RT03 RW10, Kelurahan Sagulung Kota, Kecamatan Sagulung, Kota Batam, Kepulauan Riau."
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Invalid request body!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User profile not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "User profile not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/profile/update-password": {
+			"put": {
+				"summary": "Update logged-in user's password",
+				"tags": ["Profiles"],
+				"description": "Change the password of the logged-in user.",
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"example": {
+								"currentPassword": "oldPassword123",
+								"newPassword": "newPassword456"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Password updated successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Password updated successfully!"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Current password is incorrect!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "User not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/subscription": {
+			"post": {
+				"summary": "Send subscription email",
+				"tags": ["Subscriptions"],
+				"description": "Send a subscription email to a new subscriber.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string",
+										"format": "email"
+									}
+								},
+								"example": {
+									"email": "amarafif@students.amikom.ac.id"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Subscription email sent successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Subscription email has been sent to amarafif@students.amikom.ac.id!"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Email already exists in subscriptions!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/destination": {
+			"get": {
+				"summary": "Get All Destinations",
+				"description": "Retrieve all destinations with optional filtering by price, category, and name.",
+				"tags": ["Destinations"],
+				"parameters": [
+					{
+						"name": "price",
+						"in": "query",
+						"description": "Filter destinations by price.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "category",
+						"in": "query",
+						"description": "Filter destinations by category.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "name",
+						"in": "query",
+						"description": "Search destinations by name.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "minPrice",
+						"in": "query",
+						"description": "Filter destinations by minimum price.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "maxPrice",
+						"in": "query",
+						"description": "Filter destinations by maximum price.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to retrieve all destinations!",
+									"destinations": [
+										{
+											"id": 5,
+											"name": "Pantai Parangtritis",
+											"thumbnail": "http://127.0.0.1:3001/images/destination/thumbs-52d0c05b-38ab-4bc6-b4f0-fc78f0d21a19.jpeg",
+											"description": "Pantai Parangtritis adalah tempat wisata yang terletak di Kalurahan Parangtritis, Kapanéwon Kretek, Kabupaten Bantul, Daerah Istimewa Yogyakarta. Jaraknya kurang lebih 27 km dari pusat kota. Pantai ini menjadi salah satu destinasi wisata terkenal di Yogyakarta dan telah menjadi ikon pariwisata di Yogyakarta.",
+											"price": "Rp.50.000",
+											"location": "Parangtritis, Kretek, Bantul, Daerah Istimewa Yogyakarta, Indonesia",
+											"locationMaps": "To be announce",
+											"facility": ["Prayer Room", "Eating Room", "Free Wifi"],
+											"category": "Alam",
+											"gallery": [
+												{
+													"id": 1,
+													"image": "http://127.0.0.1:3001/images/gallery_destination/thumbs-4c0916c5-6e98-4930-a878-7f148a0dfa4d.jpg",
+													"destinationId": 5
+												},
+												{
+													"id": 2,
+													"image": "http://127.0.0.1:3001/images/gallery_destination/thumbs-b81fcae6-1d13-48f5-9896-1c71298af45b.png",
+													"destinationId": 5
+												}
+											],
+											"wishlists": [
+												{
+													"id": 1,
+													"userId": 1,
+													"destinationId": 5,
+													"createdAt": "2024-03-03T08:55:00.937Z"
+												}
+											]
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "No destinations to display!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create Destination",
+				"description": "Create a new destination.",
+				"tags": ["Destinations"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"price": {
+										"type": "number"
+									},
+									"location": {
+										"type": "string"
+									},
+									"locationMaps": {
+										"type": "string"
+									},
+									"facility": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									},
+									"categoryId": {
+										"type": "integer"
+									},
+									"thumbnail": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Destination successfully created",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Destination successfully created!",
+									"destination": {
+										"id": 1,
+										"name": "Destination 1",
+										"thumbnail": "https://example.com/images/destination/destination1.jpg",
+										"description": "Description of Destination 1",
+										"price": "Rp.1,000,000",
+										"location": "Location of Destination 1",
+										"locationMaps": "Location Maps of Destination 1",
+										"facility": "Facilities of Destination 1",
+										"categoryId": 1
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Request body or file cannot be empty!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/destination/{destinationId}": {
+			"get": {
+				"summary": "Get destination by ID",
+				"tags": ["Destinations"],
+				"description": "Get details of a specific travel destination by its ID.",
+				"parameters": [
+					{
+						"name": "destinationId",
+						"in": "path",
+						"description": "ID of the destination",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to retrieve destination!",
+									"destination": {
+										"id": 1,
+										"name": "Destination 1",
+										"thumbnail": "https://example.com/images/destination/destination1.jpg",
+										"description": "Description of destination 1",
+										"price": "Rp.100,000",
+										"hasTourGuide": true,
+										"category": "Adventure",
+										"gallery": [
+											{
+												"id": 1,
+												"image": "https://example.com/images/gallery_destination/image1.jpg"
+											},
+											{
+												"id": 2,
+												"image": "https://example.com/images/gallery_destination/image2.jpg"
+											}
+										]
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"summary": "Update Destination",
+				"description": "Update an existing destination.",
+				"tags": ["Destinations"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "destinationId",
+						"in": "path",
+						"description": "ID of the destination to update",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"price": {
+										"type": "number"
+									},
+									"location": {
+										"type": "string"
+									},
+									"locationMaps": {
+										"type": "string"
+									},
+									"facility": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									},
+									"categoryId": {
+										"type": "integer"
+									},
+									"thumbnail": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Destination updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"description": "Indicates if the update was successful"
+										},
+										"message": {
+											"type": "string",
+											"description": "A message indicating the result of the update operation"
+										},
+										"destination": {
+											"type": "object",
+											"description": "Updated destination object"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination not found!"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete destination by ID",
+				"tags": ["Destinations"],
+				"description": "Delete a specific travel destination by its ID.",
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "destinationId",
+						"in": "path",
+						"description": "ID of the destination",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Destination and associated gallery images deleted successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Destination and associated gallery images deleted successfully!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/destination/{destinationId}/add-gallery": {
+			"post": {
+				"summary": "Add gallery image to destination",
+				"tags": ["Destinations"],
+				"description": "Add a new gallery image to a specific travel destination.",
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "destinationId",
+						"in": "path",
+						"description": "ID of the destination",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"image": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Gallery image successfully added",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Gallery image successfully added!",
+									"gallery": {
+										"id": 1,
+										"image": "https://example.com/images/gallery_destination/image1.jpg"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination ID or image file cannot be empty!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Failed to create gallery"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/destination/{destinationId}/delete-gallery/{galleryId}": {
+			"delete": {
+				"summary": "Delete gallery image from destination",
+				"tags": ["Destinations"],
+				"description": "Delete a gallery image from a specific travel destination.",
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "destinationId",
+						"in": "path",
+						"description": "ID of the destination",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "galleryId",
+						"in": "path",
+						"description": "ID of the gallery image",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Gallery image deleted successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Gallery image deleted successfully!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Gallery image not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/category-destination": {
+			"post": {
+				"summary": "Create Category Destination",
+				"tags": ["Category Destinations"],
+				"description": "Create a new category destination.",
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"thumbnail": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Category destination created successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Category destination created successfully",
+									"categoryDestination": {
+										"id": 1,
+										"name": "Category 1",
+										"thumbnail": "https://example.com/images/category_destination/category1.jpg"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Name of category destination cannot be empty!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error",
+									"error": "Error message"
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "Get All Category Destinations",
+				"tags": ["Category Destinations"],
+				"description": "Retrieve all category destinations.",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"categoryDestinations": [
+										{
+											"id": 1,
+											"name": "Category 1",
+											"thumbnail": "https://example.com/images/category_destination/category1.jpg"
+										},
+										{
+											"id": 2,
+											"name": "Category 2",
+											"thumbnail": "https://example.com/images/category_destination/category2.jpg"
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Categories destination not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete Category Destination",
+				"tags": ["Category Destinations"],
+				"description": "Delete a category destination.",
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "query",
+						"description": "ID of the category destination",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to delete category destination!"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Missing id parameter in the request query"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Category destination for this id not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/category-destination/{id}": {
+			"get": {
+				"summary": "Get Category Destination by ID",
+				"tags": ["Category Destinations"],
+				"description": "Retrieve a specific category destination by its ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID of the category destination",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"data": {
+										"id": 1,
+										"name": "Category 1",
+										"thumbnail": "https://example.com/images/category_destination/category1.jpg"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Category destination not found!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/destination-package": {
+			"post": {
+				"summary": "Create Destination Package",
+				"description": "Create a new destination package.",
+				"tags": ["Destination Packages"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name of the destination package"
+									},
+									"price": {
+										"type": "number",
+										"description": "Price of the destination package"
+									},
+									"facility": {
+										"type": "string",
+										"description": "Facilities provided in the destination package, separated by commas"
+									},
+									"extraBenefits": {
+										"type": "string",
+										"description": "Extra benefits provided in the destination package"
+									},
+									"destinations": {
+										"type": "array",
+										"description": "List of destinations included in the package",
+										"items": {
+											"type": "object",
+											"properties": {
+												"destinationId": {
+													"type": "integer",
+													"description": "ID of the destination"
+												},
+												"destinationOrder": {
+													"type": "integer",
+													"description": "Order of the destination in the package"
+												}
+											},
+											"required": ["destinationId", "destinationOrder"]
+										}
+									},
+									"thumbnail": {
+										"type": "string",
+										"format": "binary",
+										"description": "Thumbnail image of the destination package"
+									}
+								},
+								"required": ["name", "price", "facility", "destinations", "thumbnail"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Destination package successfully created",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Destination package successfully created!",
+									"package": {
+										"id": 1,
+										"name": "Package A",
+										"price": 1000,
+										"facility": "Facility A, Facility B",
+										"extraBenefits": "Extra benefit A, Extra benefit B",
+										"thumbnail": "http://example.com/images/destination_package/packageA.jpg",
+										"destinations": [
+											{
+												"id": 1,
+												"name": "Destination 1",
+												"destinationOrder": 1
+											},
+											{
+												"id": 2,
+												"name": "Destination 2",
+												"destinationOrder": 2
+											}
+										]
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "Get All Destination Packages",
+				"description": "Retrieve all destination packages.",
+				"tags": ["Destination Packages"],
+				"responses": {
+					"200": {
+						"description": "Success to retrieve all destination packages",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to retrieve all destination packages!",
+									"packages": [
+										{
+											"id": 1,
+											"name": "Package A",
+											"price": 1000,
+											"facility": "Facility A, Facility B",
+											"extraBenefits": "Extra benefit A, Extra benefit B",
+											"thumbnail": "http://example.com/images/destination_package/packageA.jpg",
+											"destinations": [
+												{
+													"id": 1,
+													"name": "Destination 1",
+													"destinationOrder": 1
+												},
+												{
+													"id": 2,
+													"name": "Destination 2",
+													"destinationOrder": 2
+												}
+											]
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Destination packages not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination packages not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/destination-package/{packageId}": {
+			"get": {
+				"summary": "Get Destination Package by ID",
+				"description": "Retrieve a destination package by its ID.",
+				"tags": ["Destination Packages"],
+				"parameters": [
+					{
+						"name": "packageId",
+						"in": "path",
+						"description": "ID of the destination package",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success to retrieve destination package",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to retrieve destination package!",
+									"package": {
+										"id": 1,
+										"name": "Package A",
+										"price": 1000,
+										"facility": "Facility A, Facility B",
+										"extraBenefits": "Extra benefit A, Extra benefit B",
+										"thumbnail": "http://example.com/images/destination_package/packageA.jpg",
+										"destinations": [
+											{
+												"id": 1,
+												"name": "Destination 1",
+												"destinationOrder": 1
+											},
+											{
+												"id": 2,
+												"name": "Destination 2",
+												"destinationOrder": 2
+											}
+										]
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Destination package not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination package not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"summary": "Update Destination Package by ID",
+				"description": "Update an existing destination package by its ID.",
+				"tags": ["Destination Packages"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "packageId",
+						"in": "path",
+						"description": "ID of the destination package to update",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name of the destination package"
+									},
+									"price": {
+										"type": "number",
+										"description": "Price of the destination package"
+									},
+									"facility": {
+										"type": "string",
+										"description": "Facilities provided in the destination package, separated by commas"
+									},
+									"extraBenefits": {
+										"type": "string",
+										"description": "Extra benefits provided in the destination package, separated by commas"
+									},
+									"destinations": {
+										"type": "array",
+										"description": "List of destinations included in the package",
+										"items": {
+											"type": "object",
+											"properties": {
+												"destinationId": {
+													"type": "integer",
+													"description": "ID of the destination"
+												},
+												"destinationOrder": {
+													"type": "integer",
+													"description": "Order of the destination in the package"
+												}
+											},
+											"required": ["destinationId", "destinationOrder"]
+										}
+									},
+									"thumbnail": {
+										"type": "string",
+										"format": "binary",
+										"description": "Thumbnail image of the destination package"
+									}
+								},
+								"required": []
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Destination package updated successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Destination updated successfully!",
+									"package": {
+										"id": 1,
+										"name": "Package A",
+										"price": 1000,
+										"facility": "Facility A, Facility B",
+										"extraBenefits": "Extra benefit A, Extra benefit B",
+										"thumbnail": "http://example.com/images/destination_package/packageA.jpg",
+										"destinations": [
+											{
+												"id": 1,
+												"name": "Destination 1",
+												"destinationOrder": 1
+											},
+											{
+												"id": 2,
+												"name": "Destination 2",
+												"destinationOrder": 2
+											}
+										]
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Destination package not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination package not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete Destination Package by ID",
+				"description": "Delete an existing destination package by its ID.",
+				"tags": ["Destination Packages"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "packageId",
+						"in": "path",
+						"description": "ID of the destination package to delete",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Destination package and associated gallery images deleted successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Destination package and associated gallery images deleted successfully!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Destination package not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination package not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/destination-package/{packageId}/add-gallery": {
+			"post": {
+				"summary": "Add Gallery to Destination Package",
+				"description": "Add a new gallery image to a destination package.",
+				"tags": ["Destination Packages"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "packageId",
+						"in": "path",
+						"description": "ID of the destination package",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"image": {
+										"type": "string",
+										"format": "binary",
+										"description": "Image file to be added to the gallery"
+									}
+								},
+								"required": ["image"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Gallery package successfully added",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Gallery package successfully added!",
+									"data": {
+										"id": 1,
+										"packageId": 1,
+										"image": "http://example.com/images/gallery_package/gallery1.jpg"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination ID or image file cannot be empty!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Destination package not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Destination package not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Failed to create gallery"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/destination-package/{packageId}/delete-gallery/{galleryId}": {
+			"delete": {
+				"summary": "Delete Gallery from Destination Package",
+				"description": "Delete a gallery image from a destination package.",
+				"tags": ["Destination Packages"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "packageId",
+						"in": "path",
+						"description": "ID of the destination package",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "galleryId",
+						"in": "path",
+						"description": "ID of the gallery image to delete",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Gallery package deleted successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Gallery package deleted successfully!"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Gallery package not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Gallery package not found!"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error!"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/wish-list": {
+			"get": {
+				"summary": "Get User's Wishlist",
+				"description": "Retrieve the wishlist of the authenticated user.",
+				"tags": ["Wishlist"],
+				"security": [{ "BearerAuth": [] }],
+				"responses": {
+					"200": {
+						"description": "Wishlist fetched successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Wishlist user fetch successfully",
+									"wishlist": [
+										{
+											"id": 1,
+											"userId": 123,
+											"destinationId": 456,
+											"destination": {
+												"id": 5,
+												"name": "Pantai Parangtritis",
+												"thumbnail": "http://127.0.0.1:3001/images/destination/thumbs-52d0c05b-38ab-4bc6-b4f0-fc78f0d21a19.jpeg",
+												"description": "Pantai Parangtritis adalah tempat wisata yang terletak di Kalurahan Parangtritis, Kapanéwon Kretek, Kabupaten Bantul, Daerah Istimewa Yogyakarta. Jaraknya kurang lebih 27 km dari pusat kota. Pantai ini menjadi salah satu destinasi wisata terkenal di Yogyakarta dan telah menjadi ikon pariwisata di Yogyakarta.",
+												"price": "Rp.50.000",
+												"location": "Parangtritis, Kretek, Bantul, Daerah Istimewa Yogyakarta, Indonesia",
+												"locationMaps": "To be announce",
+												"facility": ["Prayer Room", "Eating Room", "Free Wifi"],
+												"category": "Alam",
+												"gallery": []
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Add Destination to Wishlist",
+				"description": "Add a destination to the authenticated user's wishlist.",
+				"tags": ["Wishlist"],
+				"security": [{ "BearerAuth": [] }],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"destinationId": {
+										"type": "integer",
+										"description": "ID of the destination to add to wishlist"
+									}
+								},
+								"example": {
+									"destinationId": 123
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Destination added to wishlist",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Destination added to wishlist",
+									"wishlistItem": {
+										"id": 1,
+										"userId": 123,
+										"destinationId": 456
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "You have already added this destination to your wishlist"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/wish-list/{destinationId}": {
+			"delete": {
+				"summary": "Remove Destination from Wishlist",
+				"description": "Remove a destination from the authenticated user's wishlist.",
+				"tags": ["Wishlist"],
+				"security": [{ "BearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "destinationId",
+						"in": "path",
+						"description": "ID of the destination to remove from wishlist",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Destination removed from wishlist",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Destination removed from wishlist"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "You have not added this destination to your wishlist"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/promo": {
+			"get": {
+				"summary": "Get All Promotions",
+				"description": "Retrieve all available promotions.",
+				"tags": ["Promotions"],
+				"responses": {
+					"200": {
+						"description": "Promotions fetched successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to retrieve all promo!",
+									"promotions": [
+										{
+											"id": 1,
+											"name": "Promotion Name",
+											"thumbnail": "https://example.com/thumbnail.jpg",
+											"code": "ABC123",
+											"discountPercentage": 20,
+											"validFrom": "2024-02-10",
+											"validTo": "2024-02-20"
+										}
+									]
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create Promotion",
+				"description": "Create a new promotion.",
+				"tags": ["Promotions"],
+				"security": [{ "BearerAuth": [] }],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name of the promotion"
+									},
+									"code": {
+										"type": "string",
+										"description": "Promotion code"
+									},
+									"discountPercentage": {
+										"type": "integer",
+										"description": "Discount percentage value"
+									},
+									"validFrom": {
+										"type": "string",
+										"description": "Start date of the promotion (YYYY-MM-DD)"
+									},
+									"validTo": {
+										"type": "string",
+										"description": "End date of the promotion (YYYY-MM-DD)"
+									},
+									"thumbnail": {
+										"type": "string",
+										"format": "binary",
+										"description": "Thumbnail image of the promotion"
+									}
+								},
+								"example": {
+									"name": "Promotion Name",
+									"code": "ABC123",
+									"discountPercentage": 20,
+									"validFrom": "2024-02-10",
+									"validTo": "2024-02-20"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Promotion created successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Promo created successfully",
+									"promo": {
+										"id": 1,
+										"name": "Promotion Name",
+										"thumbnail": "https://example.com/thumbnail.jpg",
+										"code": "ABC123",
+										"discountPercentage": 20,
+										"validFrom": "2024-02-10",
+										"validTo": "2024-02-20"
+									}
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/promo/{promoId}": {
+			"put": {
+				"summary": "Update Promotion",
+				"description": "Update an existing promotion.",
+				"tags": ["Promotions"],
+				"security": [{ "BearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "promoId",
+						"in": "path",
+						"description": "ID of the promotion to update",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"code": {
+										"type": "string",
+										"description": "Promotion code"
+									},
+									"discountPercentage": {
+										"type": "integer",
+										"description": "Discount percentage value"
+									},
+									"validFrom": {
+										"type": "string",
+										"description": "Start date of the promotion (YYYY-MM-DD)"
+									},
+									"validTo": {
+										"type": "string",
+										"description": "End date of the promotion (YYYY-MM-DD)"
+									}
+								},
+								"example": {
+									"code": "NEWCODE123",
+									"discountPercentage": 25,
+									"validFrom": "2024-03-01",
+									"validTo": "2024-03-10"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Promotion updated successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Promo updated successfully",
+									"promo": {
+										"id": 1,
+										"name": "Promotion Name",
+										"thumbnail": "https://example.com/thumbnail.jpg",
+										"code": "NEWCODE123",
+										"discountPercentage": 25,
+										"validFrom": "2024-03-01",
+										"validTo": "2024-03-10"
+									}
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete Promotion",
+				"description": "Delete an existing promotion.",
+				"tags": ["Promotions"],
+				"security": [{ "BearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "promoId",
+						"in": "path",
+						"description": "ID of the promotion to delete",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Promotion deleted successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Promo deleted successfully"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/payment-method": {
+			"get": {
+				"summary": "Get All Payment Methods",
+				"description": "Retrieve all available payment methods.",
+				"tags": ["Payment Methods"],
+				"responses": {
+					"200": {
+						"description": "Payment methods fetched successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to retrieve all payment Method!",
+									"paymentMethods": [
+										{
+											"id": 1,
+											"name": "Payment Method Name",
+											"thumbnail": "https://example.com/thumbnail.jpg",
+											"accountName": "Account Name",
+											"accountNumber": "1234567890"
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Payment methods data not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Payments method data not found"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create Payment Method",
+				"description": "Create a new payment method.",
+				"tags": ["Payment Methods"],
+				"security": [{ "BearerAuth": [] }],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name of the payment method"
+									},
+									"accountName": {
+										"type": "string",
+										"description": "Account holder's name"
+									},
+									"accountNumber": {
+										"type": "string",
+										"description": "Account number"
+									},
+									"thumbnail": {
+										"type": "string",
+										"format": "binary",
+										"description": "Thumbnail image of the payment method"
+									}
+								},
+								"example": {
+									"name": "Payment Method Name",
+									"accountName": "Account Name",
+									"accountNumber": "1234567890"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Payment method created successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "A payment method created successfully",
+									"promo": {
+										"id": 1,
+										"name": "Payment Method Name",
+										"thumbnail": "https://example.com/thumbnail.jpg",
+										"accountName": "Account Name",
+										"accountNumber": "1234567890"
+									}
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/payment-method/{paymentMethodId}": {
+			"put": {
+				"summary": "Update Payment Method",
+				"description": "Update an existing payment method.",
+				"tags": ["Payment Methods"],
+				"security": [{ "BearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "paymentMethodId",
+						"in": "path",
+						"description": "ID of the payment method to update",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name of the payment method"
+									},
+									"accountName": {
+										"type": "string",
+										"description": "Account holder's name"
+									},
+									"accountNumber": {
+										"type": "string",
+										"description": "Account number"
+									}
+								},
+								"example": {
+									"name": "Updated Payment Method Name",
+									"accountName": "Updated Account Name",
+									"accountNumber": "0987654321"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Payment method updated successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Payment method updated successfully",
+									"method": {
+										"id": 1,
+										"name": "Updated Payment Method Name",
+										"thumbnail": "https://example.com/thumbnail.jpg",
+										"accountName": "Updated Account Name",
+										"accountNumber": "0987654321"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Payment method not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Payment method not found"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete Payment Method",
+				"description": "Delete an existing payment method.",
+				"tags": ["Payment Methods"],
+				"security": [{ "BearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "paymentMethodId",
+						"in": "path",
+						"description": "ID of the payment method to delete",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Payment method deleted successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Payment method deleted successfully"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Payment method not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Payment method not found"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal server error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/payment": {
+			"post": {
+				"summary": "Create Payment",
+				"description": "Create a new payment record.",
+				"tags": ["Payments"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"destinationId": {
+										"type": "string",
+										"description": "ID of the destination"
+									},
+									"packageId": {
+										"type": "string",
+										"description": "ID of the package"
+									},
+									"paymentMethodId": {
+										"type": "string",
+										"description": "ID of the payment method"
+									},
+									"amount": {
+										"type": "number",
+										"description": "Payment amount"
+									},
+									"goingAt": {
+										"type": "string",
+										"description": "Date when the user is going"
+									},
+									"thumbnail": {
+										"type": "string",
+										"format": "binary",
+										"description": "Thumbnail image of the payment proof"
+									}
+								},
+								"example": {
+									"destinationId": "1",
+									"packageId": "1",
+									"paymentMethodId": "1",
+									"amount": 100,
+									"goingAt": "2024-02-10",
+									"thumbnail": "image_file.jpg"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Payment created successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Your payment has been successfully recorded in the system!",
+									"payment": {
+										"id": 1,
+										"referenceId": "BERKELANA-ABCDE",
+										"userId": 1,
+										"destinationId": 1,
+										"packageId": 1,
+										"paymentMethodId": 1,
+										"name": "User Name",
+										"email": "user@example.com",
+										"phoneNumber": "1234567890",
+										"amount": 100,
+										"paymentProof": "https://example.com/images/payment_proof/image_file.jpg",
+										"statusPayment": "review",
+										"goingAt": "2024-02-10T00:00:00.000Z",
+										"expiredAt": "2024-02-11T00:00:00.000Z"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User profile not found",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "User profile not found"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Failed to create payment"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/payment/history": {
+			"get": {
+				"summary": "Get All User Payment History",
+				"description": "Retrieve all payment history data for the current user.",
+				"tags": ["Payments"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Payment history fetched successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to retrieve all payment history data!",
+									"paymentHistory": [
+										{
+											"id": 1,
+											"referenceId": "BERKELANA-ABCDE",
+											"userId": 1,
+											"destinationId": 1,
+											"packageId": 1,
+											"paymentMethodId": 1,
+											"name": "User Name",
+											"email": "user@example.com",
+											"phoneNumber": "1234567890",
+											"amount": 100,
+											"paymentProof": "https://example.com/images/payment_proof/image_file.jpg",
+											"statusPayment": "review",
+											"goingAt": "2024-02-10T00:00:00.000Z",
+											"expiredAt": "2024-02-11T00:00:00.000Z"
+										}
+									]
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/payment/history/{destinationId}/{packageId}": {
+			"get": {
+				"summary": "Get User Payment History",
+				"description": "Retrieve payment history data for the current user based on destination and package.",
+				"tags": ["Payments"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "destinationId",
+						"in": "path",
+						"description": "ID of the destination (optional)",
+						"required": false,
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "packageId",
+						"in": "path",
+						"description": "ID of the package (optional)",
+						"required": false,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User payment history fetched successfully",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"payments": [
+										{
+											"id": 1,
+											"referenceId": "BERKELANA-ABCDE",
+											"userId": 1,
+											"destinationId": 1,
+											"packageId": 1,
+											"paymentMethodId": 1,
+											"name": "User Name",
+											"email": "user@example.com",
+											"phoneNumber": "1234567890",
+											"amount": 100,
+											"paymentProof": "https://example.com/images/payment_proof/image_file.jpg",
+											"statusPayment": "review",
+											"goingAt": "2024-02-10T00:00:00.000Z",
+											"expiredAt": "2024-02-11T00:00:00.000Z"
+										}
+									]
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/payment/review/{paymentId}": {
+			"put": {
+				"summary": "Confirm Payment History",
+				"description": "Admin confirms the status of a payment. value = ['unpaid', 'review', 'paid']",
+				"tags": ["Payments"],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "paymentId",
+						"in": "path",
+						"description": "ID of the payment",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"statusPayment": {
+										"type": "string",
+										"description": "New status of the payment = unpaid/review/paid"
+									}
+								},
+								"example": {
+									"statusPayment": "paid"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success to update user status payment",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": true,
+									"message": "Success to update user status payment"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"example": {
+									"success": false,
+									"message": "Internal Server Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

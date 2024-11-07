@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  Int       @id @default(autoincrement())
+  username            String?   @unique
+  email               String    @unique
+  password            String?
+  role                Role      @default(user)
+  resetPasswordToken  String?
+  registeredAt        DateTime
+  profile             Profile?
+  ratings             Rating[]   
+  testimonials        Testimonial[]
+  wishlists           Wishlist[]
+  payments            Payment[]
+}
+
+model Profile {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @unique
+  name        String?
+  phoneNumber String?
+  address     String?
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  admin
+  user
+}
+
+model CategoryDestination {
+  id          Int         @id @default(autoincrement())
+  name        String
+  thumbnail   String?
+  destinations Destination[]
+}
+
+model Destination {
+  id                  Int               @id @default(autoincrement())
+  name                String
+  thumbnail           String
+  description         String
+  price               Decimal
+  location            String
+  locationMaps        String?
+  facility            String[]
+  categoryId          Int
+  category            CategoryDestination @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  gallery             GaleryDestination[]
+  rating              Rating[]
+  testimoni           Testimonial[]
+  packageDestination  DestinationPackageDestination[]
+  wishlists           Wishlist[]
+  payments            Payment[]
+}
+
+model GaleryDestination {
+  id        Int     @id @default(autoincrement())
+  image     String
+  destinationId Int
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+}
+
+model GaleryPackage {
+  id                  Int     @id @default(autoincrement())
+  image               String
+  packageId           Int
+  destinationPackage  DestinationPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  subscribedAt  DateTime
+}
+
+model Wishlist {
+  id              Int         @id @default(autoincrement())
+  user            User        @relation(fields: [userId], references: [id])
+  userId          Int
+  destination     Destination @relation(fields: [destinationId], references: [id])
+  destinationId   Int
+  createdAt       DateTime    @default(now())
+}
+
+model Rating {
+  id              Int         @id @default(autoincrement())
+  value           Int       
+  destinationId   Int
+  userId          Int
+  user            User        @relation(fields: [userId], references: [id])
+  destination     Destination @relation(fields: [destinationId], references: [id])
+}
+
+model Testimonial {
+  id              Int         @id @default(autoincrement())
+  content         String
+  createdAt       DateTime    
+  destinationId   Int
+  userId          Int
+  user            User        @relation(fields: [userId], references: [id])
+  destination     Destination @relation(fields: [destinationId], references: [id])
+}
+
+model DestinationPackage {
+  id            Int           @id @default(autoincrement())
+  name          String
+  price         Decimal
+  facility      String[]
+  thumbnail     String?
+  destinations  DestinationPackageDestination[]
+  gallery       GaleryPackage[]
+  extraBenefits String[]
+  payments      Payment[]
+}
+
+model DestinationPackageDestination {
+  id                Int                 @id @default(autoincrement())
+  destinationId     Int
+  destination       Destination         @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationOrder  Int          
+  package           DestinationPackage  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  packageId         Int
+}
+
+model Promo {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  thumbnail           String?
+  code                String    @unique
+  discountPercentage  Int
+  validFrom           DateTime
+  validTo             DateTime
+}
+
+model Payment {
+  id              Int                   @id @default(autoincrement())
+  referenceId     String
+  user            User                  @relation(fields: [userId], references: [id])
+  userId          Int
+  destination     Destination?          @relation(fields: [destinationId], references: [id])
+  destinationId   Int?
+  package         DestinationPackage?   @relation(fields: [packageId], references: [id])
+  packageId       Int?
+  paymentMethod   PaymentMethod         @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId Int
+  name            String
+  email           String
+  phoneNumber     String
+  country         String                @default("Indonesia")
+  amount          Decimal
+  paymentProof    String
+  statusPayment   StatusPayment
+  createdAt       DateTime              @default(now())
+  paidAt          DateTime?
+  goingAt         DateTime
+  expiredAt       DateTime?
+}
+
+enum StatusPayment {
+  unpaid
+  review
+  paid
+}
+
+model PaymentMethod {
+  id            Int    @id @default(autoincrement())
+  name          String
+  thumbnail     String?
+  accountName   String
+  accountNumber String
+  payments      Payment[]
+}
